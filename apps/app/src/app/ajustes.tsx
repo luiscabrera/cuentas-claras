@@ -117,7 +117,7 @@ export default function SettingsScreen() {
         <Section title="Tus hogares">
           {households.length > 1 ? (
             <View
-              accessibilityRole="radiogroup"
+              role="radiogroup"
               className="overflow-hidden rounded-3xl border border-cielo-200 bg-white"
             >
               {households.map((h, index) => {
@@ -125,8 +125,8 @@ export default function SettingsScreen() {
                 return (
                   <Pressable
                     key={h.id}
-                    accessibilityRole="radio"
-                    accessibilityState={{ checked: selected }}
+                    role="radio"
+                    aria-checked={selected}
                     onPress={() => {
                       setActive(h.id);
                       toast.show(`Ahora estás en «${h.name}»`);

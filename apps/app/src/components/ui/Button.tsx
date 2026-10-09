@@ -48,9 +48,10 @@ export function Button({
   return (
     <Pressable
       testID={testID}
-      accessibilityRole="button"
+      role="button"
       accessibilityLabel={label}
-      accessibilityState={{ disabled: inactive, busy: loading }}
+      aria-disabled={inactive}
+      aria-busy={loading}
       disabled={inactive}
       onPress={onPress}
       className={`flex-row items-center justify-center gap-2 rounded-full px-5 ${
@@ -89,7 +90,7 @@ export function IconButton({
   return (
     <Pressable
       testID={testID}
-      accessibilityRole="button"
+      role="button"
       accessibilityLabel={label}
       onPress={onPress}
       hitSlop={8}

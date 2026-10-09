@@ -15,19 +15,15 @@ export function CategoryPicker({
 }) {
   return (
     <View className="gap-2">
-      <View
-        accessibilityRole="radiogroup"
-        accessibilityLabel="Categoría"
-        className="flex-row flex-wrap gap-2"
-      >
+      <View role="radiogroup" accessibilityLabel="Categoría" className="flex-row flex-wrap gap-2">
         {categories.map((category) => {
           const selected = category.id === value;
           return (
             <Pressable
               key={category.id}
               testID={`category-${category.name}`}
-              accessibilityRole="radio"
-              accessibilityState={{ checked: selected }}
+              role="radio"
+              aria-checked={selected}
               accessibilityLabel={category.name}
               onPress={() => onChange(category.id)}
               className={`min-h-[44px] flex-row items-center gap-2 rounded-full px-4 ${

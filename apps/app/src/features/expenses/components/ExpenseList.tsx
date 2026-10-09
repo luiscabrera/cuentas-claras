@@ -22,7 +22,7 @@ function ExpenseRow({ expense, household }: { expense: Expense; household: House
   return (
     <Pressable
       testID="expense-row"
-      accessibilityRole="button"
+      role="button"
       accessibilityLabel={`${title}, ${formatMoney(expense.amount_cents, expense.currency)}, pagó ${payer}`}
       onPress={() => router.push({ pathname: '/gasto/[id]', params: { id: expense.id } })}
       className="flex-row items-center gap-3 px-4 py-3 active:bg-cielo-50"

@@ -42,7 +42,7 @@ export function MerchantField({
           {suggestions.map((merchant) => (
             <Pressable
               key={merchant.id}
-              accessibilityRole="button"
+              role="button"
               accessibilityLabel={`Elegir ${merchant.name}`}
               onPress={() => onPick(merchant)}
               className="min-h-[40px] justify-center rounded-full bg-cielo-100 px-4 active:bg-cielo-200"

@@ -48,7 +48,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <View
               testID="toast"
               accessibilityLiveRegion="polite"
-              accessibilityRole="alert"
+              role="alert"
               className="flex-row items-center rounded-full bg-tinta px-5 py-3 shadow-lg"
             >
               <Text className="text-[15px] font-medium text-white">{message}</Text>

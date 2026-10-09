@@ -47,7 +47,7 @@ export function DateTimeField({ value, onChange }: DateTimeFieldProps) {
 
   return (
     <Pressable
-      accessibilityRole="button"
+      role="button"
       accessibilityLabel="Cambiar fecha y hora"
       onPress={openAndroid}
       className="min-h-[48px] flex-row items-center justify-between rounded-2xl border border-cielo-200 bg-white px-4"

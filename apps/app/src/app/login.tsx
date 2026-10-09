@@ -121,12 +121,12 @@ export default function LoginScreen() {
         />
 
         {mutation.error ? (
-          <Text className="text-[15px] text-error" accessibilityRole="alert">
+          <Text className="text-[15px] text-error" role="alert">
             {errorMessage(mutation.error)}
           </Text>
         ) : null}
         {notice ? (
-          <Text className="text-[15px] text-cielo-700" accessibilityRole="alert">
+          <Text className="text-[15px] text-cielo-700" role="alert">
             {notice}
           </Text>
         ) : null}

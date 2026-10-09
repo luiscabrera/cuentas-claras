@@ -17,7 +17,7 @@ export function Segmented<T extends string>({
 }) {
   return (
     <View
-      accessibilityRole="radiogroup"
+      role="radiogroup"
       accessibilityLabel={accessibilityLabel}
       className="flex-row gap-1 rounded-full bg-cielo-100 p-1"
     >
@@ -26,8 +26,8 @@ export function Segmented<T extends string>({
         return (
           <Pressable
             key={option.value}
-            accessibilityRole="radio"
-            accessibilityState={{ checked: selected }}
+            role="radio"
+            aria-checked={selected}
             accessibilityLabel={option.label}
             onPress={() => onChange(option.value)}
             className={`min-h-[44px] flex-1 flex-row items-center justify-center gap-2 rounded-full px-3 ${

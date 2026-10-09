@@ -155,7 +155,7 @@ export function HouseholdSetup({
       )}
 
       {mutation.error ? (
-        <Text className="text-[15px] text-error" accessibilityRole="alert">
+        <Text className="text-[15px] text-error" role="alert">
           {errorMessage(mutation.error)}
         </Text>
       ) : null}
