@@ -201,9 +201,14 @@ export function useDeleteExpense(householdId: string, id: string) {
       const { error } = await supabase.from('expenses').delete().eq('id', id);
       if (error) throw error;
     },
-    onSuccess: async () => {
-      queryClient.removeQueries({ queryKey: expenseKeys.detail(householdId, id) });
-      await invalidateExpenses(queryClient, householdId);
-    },
+    // El gasto ya no existe: se recargan las listas, pero no su detalle (la pantalla se está cerrando).
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: expenseKeys.all(householdId),
+          predicate: (query) => query.queryKey[2] !== 'detail',
+        }),
+        queryClient.invalidateQueries({ queryKey: expenseKeys.merchants(householdId) }),
+      ]),
   });
 }

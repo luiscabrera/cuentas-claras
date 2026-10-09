@@ -1,8 +1,8 @@
-import { expenseFormSchema, type ExpenseFormValues } from '@cuentas-claras/core';
+import { expenseFormSchema, findByName, type ExpenseFormValues } from '@cuentas-claras/core';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
-import type { ReactNode } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect, type ReactNode } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, Text, View } from 'react-native';
 
 import { Button, IconButton } from '@/components/ui/Button';
@@ -67,6 +67,15 @@ export function ExpenseForm({
     },
   });
 
+  // Si se escribe el nombre exacto de un comercio conocido, también trae su categoría.
+  const merchantName = useWatch({ control: form.control, name: 'merchantName' });
+  useEffect(() => {
+    const known = findByName(merchants.data ?? [], merchantName);
+    if (known?.default_category_id && !form.getValues('categoryId')) {
+      form.setValue('categoryId', known.default_category_id, { shouldValidate: true });
+    }
+  }, [merchantName, merchants.data, form]);
+
   const submit = form.handleSubmit(onSubmit);
   const loading = categories.isPending || merchants.isPending;
 
@@ -81,7 +90,7 @@ export function ExpenseForm({
       footer={
         <View className="gap-2">
           {error ? (
-            <Text className="text-center text-[15px] text-error" accessibilityRole="alert">
+            <Text className="text-center text-[15px] text-error" role="alert">
               {errorMessage(error)}
             </Text>
           ) : null}
