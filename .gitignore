@@ -147,3 +147,16 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Expo (la app tiene además su propio apps/app/.gitignore)
+.expo/
+web-build/
+
+# Supabase CLI
+supabase/.branches
+supabase/.temp
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/

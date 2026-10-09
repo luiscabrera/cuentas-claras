@@ -1,0 +1,45 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: America/Argentina/Buenos_Aires
+    open-pull-requests-limit: 5
+    groups:
+      dependencias:
+        patterns: ['*']
+        update-types: [minor, patch]
+    ignore:
+      # Expo, React y React Native se actualizan juntos con `pnpm expo install --fix`.
+      - dependency-name: expo
+      - dependency-name: 'expo-*'
+      - dependency-name: '@expo/*'
+      - dependency-name: babel-preset-expo
+      - dependency-name: eslint-config-expo
+      - dependency-name: react
+      - dependency-name: react-dom
+      - dependency-name: react-native
+      - dependency-name: 'react-native-*'
+      - dependency-name: '@react-native-async-storage/*'
+      - dependency-name: '@react-native-community/*'
+      - dependency-name: '@types/react'
+      # NativeWind 4 va con Tailwind 3 y su propio react-native-css-interop.
+      - dependency-name: react-native-css-interop
+      - dependency-name: tailwindcss
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: America/Argentina/Buenos_Aires
+    groups:
+      acciones:
+        patterns: ['*']

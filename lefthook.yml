@@ -1,0 +1,20 @@
+# Hooks de git (https://lefthook.dev). Se instalan solos con `pnpm install`.
+pre-commit:
+  parallel: true
+  jobs:
+    - name: prettier
+      glob: '*.{js,jsx,ts,tsx,json,css,yml,yaml}'
+      run: pnpm exec prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+
+    - name: eslint app
+      root: apps/app/
+      glob: '*.{js,jsx,ts,tsx}'
+      run: pnpm exec eslint --fix {staged_files}
+      stage_fixed: true
+
+    - name: eslint core
+      root: packages/core/
+      glob: '*.{js,ts}'
+      run: pnpm exec eslint --fix {staged_files}
+      stage_fixed: true
