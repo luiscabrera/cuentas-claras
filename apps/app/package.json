@@ -10,7 +10,8 @@
     "ios": "expo start --ios",
     "build": "expo export --platform web",
     "lint": "expo lint",
-    "typecheck": "expo customize tsconfig.json && tsc --noEmit"
+    "typecheck": "expo customize tsconfig.json && tsc --noEmit",
+    "icons": "node scripts/generate-icons.mts"
   },
   "dependencies": {
     "@cuentas-claras/core": "workspace:*",
@@ -52,6 +53,7 @@
     "babel-preset-expo": "~57.0.14",
     "eslint": "^9.39.5",
     "eslint-config-expo": "~57.0.2",
+    "sharp": "^0.35.5",
     "tailwindcss": "^3.4.19",
     "typescript": "~6.0.3"
   }
