@@ -36,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path' | xargs pnpm exec prettier --write --ignore-unknown --log-level warn"
+            "command": "jq -r '.tool_input.file_path' | grep -F \"$CLAUDE_PROJECT_DIR/\" | xargs -r pnpm exec prettier --write --ignore-unknown --log-level warn"
           }
         ]
       }
