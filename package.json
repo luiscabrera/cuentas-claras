@@ -1,0 +1,30 @@
+{
+  "name": "cuentas-claras",
+  "private": true,
+  "packageManager": "pnpm@11.28.5",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @cuentas-claras/app web",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "e2e": "pnpm --filter @cuentas-claras/e2e test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:types": "supabase gen types typescript --local > packages/core/src/database.types.ts && prettier --write packages/core/src/database.types.ts",
+    "prepare": "lefthook install || echo \"lefthook: no hay repo de git, salteo los hooks\""
+  },
+  "devDependencies": {
+    "lefthook": "2.2.1",
+    "prettier": "3.9.9",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "supabase": "2.120.0",
+    "turbo": "2.11.7"
+  }
+}

@@ -1,0 +1,14 @@
+# Generados o de terceros
+pnpm-lock.yaml
+**/dist
+**/.expo
+**/.turbo
+**/node_modules
+playwright-report
+test-results
+supabase/.temp
+supabase/.branches
+
+# La documentación se escribe a mano
+*.md
+**/expo-env.d.ts
