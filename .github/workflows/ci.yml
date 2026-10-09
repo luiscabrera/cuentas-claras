@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Formato, lint, tipos, tests y build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+  e2e:
+    name: De punta a punta (Supabase local + Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Levantar Supabase local (aplica migraciones y seed)
+        run: pnpm exec supabase start -x realtime,storage-api,imgproxy,mailpit,studio,edge-runtime,logflare,vector,supavisor
+
+      - name: Los tipos de la base coinciden con las migraciones
+        run: |
+          pnpm db:types
+          if ! git diff --quiet -- packages/core/src/database.types.ts; then
+            DIFF="$(git diff -- packages/core/src/database.types.ts | head -80)"
+            DIFF="${DIFF//'%'/'%25'}"
+            DIFF="${DIFF//$'\n'/'%0A'}"
+            echo "::error file=packages/core/src/database.types.ts,title=Tipos de la base desactualizados::Corré pnpm db:types y commiteá el resultado.%0A${DIFF}"
+            exit 1
+          fi
+
+      - name: Build web apuntando a Supabase local
+        run: |
+          eval "$(pnpm exec supabase status -o env)"
+          export EXPO_PUBLIC_SUPABASE_URL="$API_URL"
+          export EXPO_PUBLIC_SUPABASE_KEY="${PUBLISHABLE_KEY:-$ANON_KEY}"
+          pnpm --filter @cuentas-claras/app build
+
+      - name: Instalar Chromium
+        run: pnpm --filter @cuentas-claras/e2e exec playwright install --with-deps chromium
+
+      - name: Pruebas de punta a punta
+        run: pnpm e2e
+
+      - name: Guardar el reporte si algo falló
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 7

@@ -102,7 +102,7 @@ export default function SettingsScreen() {
                   name={member.display_name}
                   size={40}
                 />
-                <Text className="flex-1 text-[16px] text-tinta">
+                <Text testID="member-name" className="flex-1 text-[16px] text-tinta">
                   {member.display_name}
                   {member.user_id === userId ? ' (vos)' : ''}
                 </Text>
