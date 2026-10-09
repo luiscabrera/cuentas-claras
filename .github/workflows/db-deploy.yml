@@ -1,0 +1,54 @@
+name: Migraciones a producción
+
+# Cuando entra a main una migración nueva, se aplica en el proyecto de Supabase.
+# Necesita los secrets SUPABASE_ACCESS_TOKEN, SUPABASE_DB_PASSWORD y SUPABASE_PROJECT_ID
+# (ver docs/ROADMAP.md). Mientras no estén, el workflow avisa y no hace nada.
+on:
+  push:
+    branches: [main]
+    paths: ['supabase/migrations/**']
+  workflow_dispatch:
+
+concurrency:
+  group: db-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: supabase db push
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+    steps:
+      - name: Revisar la configuración
+        id: config
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ] || [ -z "$SUPABASE_PROJECT_ID" ]; then
+            echo "::notice title=Supabase sin configurar::Faltan los secrets de Supabase. No se aplicaron migraciones."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7
+        if: steps.config.outputs.ready == 'true'
+      - uses: pnpm/action-setup@v6
+        if: steps.config.outputs.ready == 'true'
+      - uses: actions/setup-node@v7
+        if: steps.config.outputs.ready == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - if: steps.config.outputs.ready == 'true'
+        run: pnpm install --frozen-lockfile
+      - name: Vincular el proyecto
+        if: steps.config.outputs.ready == 'true'
+        run: pnpm exec supabase link --project-ref "$SUPABASE_PROJECT_ID"
+      - name: Aplicar migraciones
+        if: steps.config.outputs.ready == 'true'
+        run: pnpm exec supabase db push --yes
