@@ -47,17 +47,6 @@ jobs:
       - name: Levantar Supabase local (aplica migraciones y seed)
         run: pnpm exec supabase start -x realtime,storage-api,imgproxy,mailpit,studio,edge-runtime,logflare,vector,supavisor
 
-      - name: Los tipos de la base coinciden con las migraciones
-        run: |
-          pnpm db:types
-          if ! git diff --quiet -- packages/core/src/database.types.ts; then
-            DIFF="$(git diff -- packages/core/src/database.types.ts | head -80)"
-            DIFF="${DIFF//'%'/'%25'}"
-            DIFF="${DIFF//$'\n'/'%0A'}"
-            echo "::error file=packages/core/src/database.types.ts,title=Tipos de la base desactualizados::Corré pnpm db:types y commiteá el resultado.%0A${DIFF}"
-            exit 1
-          fi
-
       - name: Build web apuntando a Supabase local
         run: |
           eval "$(pnpm exec supabase status -o env)"
@@ -70,6 +59,18 @@ jobs:
 
       - name: Pruebas de punta a punta
         run: pnpm e2e
+
+      - name: Los tipos de la base coinciden con las migraciones
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm db:types
+          if ! git diff --quiet -- packages/core/src/database.types.ts; then
+            DIFF="$(git diff -- packages/core/src/database.types.ts | head -80)"
+            DIFF="${DIFF//'%'/'%25'}"
+            DIFF="${DIFF//$'\n'/'%0A'}"
+            echo "::error file=packages/core/src/database.types.ts,title=Tipos de la base desactualizados::Corré pnpm db:types y commiteá el resultado.%0A${DIFF}"
+            exit 1
+          fi
 
       - name: Guardar el reporte si algo falló
         if: failure()

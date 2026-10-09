@@ -17,7 +17,7 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "db:types": "supabase gen types typescript --local > packages/core/src/database.types.ts && prettier --write packages/core/src/database.types.ts",
+    "db:types": "supabase gen types typescript --local --schema public > packages/core/src/database.types.ts && prettier --write packages/core/src/database.types.ts",
     "prepare": "lefthook install || echo \"lefthook: no hay repo de git, salteo los hooks\""
   },
   "devDependencies": {
